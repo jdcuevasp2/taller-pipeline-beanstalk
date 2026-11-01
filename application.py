@@ -1,16 +1,18 @@
-import funtions as f
-from flask import Flask, jsonify
+import funtions as f 
+from flask import Flask, jsonify, abort 
+  
+application = Flask(__name__) 
+data = f.load_file('./heroes.csv') 
+  
+@application.route("/") 
+def index(): 
+    return jsonify(data) 
 
-application = Flask(__name__)
-data = f.load_file('./heroes.csv')
-
-@application.route("/")
-def index():
-    return jsonify(data)
-
-@application.route("/<string:id>")
-def heroe(id):
-    return jsonify(data[id])
-
-if __name__ == "__main__":
-    application.run(port = 5000, debug = True)
+@application.route("/<string:id_heroe>") 
+def heroe(id_heroe): 
+    if id_heroe not in data: 
+        abort(404, description="Heroe no encontrado") 
+    return jsonify(data[id_heroe]) 
+  
+if __name__ == "__main__": 
+    application.run(port=5000, debug=True)
